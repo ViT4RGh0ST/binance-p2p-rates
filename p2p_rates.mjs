@@ -16,6 +16,7 @@ function normalizeFinishRate(v) {
 }
 
 const PAY_TYPES = {
+  // Venezuela (VES)
   provincial: "Provincial",
   banesco: "Banesco",
   mercantil: "Mercantil",
@@ -24,9 +25,24 @@ const PAY_TYPES = {
   bancaribe: "Bancaribe",
   bnc: "BNCBancoNacional",
   pagomovil: "PagoMovil",
-  bank: "BANK",
-  zelle: "Zelle",
   zinli: "Zinli",
+  // Colombia (COP)
+  bancolombia: "BancolombiaSA",
+  nequi: "Nequi",
+  daviplata: "Daviplata",
+  davivienda: "DaviviendaSA",
+  bogota: "BancodeBogota",
+  bancodebogota: "BancodeBogota",
+  cajasocial: "BancoSocialColombia",
+  scotiabank: "ScotiabankColpatria",
+  colpatria: "ScotiabankColpatria",
+  breb: "BreBKeys",
+  brebkeys: "BreBKeys",
+  cashdeposit: "CashDeposit",
+  // Multi-market / generic
+  bank: "BANK",
+  bbva: "BBVABank",
+  zelle: "Zelle",
 };
 
 function resolveBankPayType(bank) {
@@ -86,7 +102,7 @@ function parseArgs(argv) {
           "  --target-ves N      Atajo: fija --amount N y calcula USDT equivalente",
           "  --fiat VES|USD|...  Moneda fiat (default VES)",
           "  --trade SELL|BUY    SELL=tú vendes USDT (default), BUY=tú compras",
-          "  --bank NAME         Un solo banco (default provincial)",
+          "  --bank NAME         Un solo banco / método (default provincial)",
           "  --banks a,b,c       Compara varios bancos en una sola corrida",
           "                      (prevalece sobre --bank; añade bloque by_bank)",
           "  --rows N            Filas por banco (default 5, max 20)",
@@ -98,8 +114,12 @@ function parseArgs(argv) {
           "  --json              JSON crudo del primer banco",
           "  --summary-json      JSON compacto (estructurado, multi-banco)",
           "",
-          "Aliases de --bank / --banks: provincial, banesco, mercantil, bdv,",
-          "  bancamiga, bancaribe, bnc, pagomovil, bank, zelle, zinli, any.",
+          "Aliases de --bank / --banks:",
+          "  VE (VES): provincial, banesco, mercantil, bdv, bancamiga,",
+          "            bancaribe, bnc, pagomovil, zinli",
+          "  CO (COP): bancolombia, nequi, daviplata, davivienda, bogota,",
+          "            cajasocial, scotiabank|colpatria, breb, cashdeposit",
+          "  Mixto:    bank, bbva, zelle, any.",
         ].join("\n")
       );
       process.exit(0);

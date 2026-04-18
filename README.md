@@ -40,9 +40,14 @@ node p2p_rates.mjs [options]
 
 ### Supported bank aliases
 
-`provincial`, `banesco`, `mercantil`, `bdv`, `bancamiga`, `bancaribe`,
-`bnc`, `pagomovil`, `bank`, `zelle`, `zinli`. Any other string is passed
-through to Binance as-is (useful for methods outside this list).
+| Market | Aliases |
+| ------ | ------- |
+| Venezuela (`--fiat VES`) | `provincial`, `banesco`, `mercantil`, `bdv`, `bancamiga`, `bancaribe`, `bnc`, `pagomovil`, `zinli` |
+| Colombia (`--fiat COP`)  | `bancolombia`, `nequi`, `daviplata`, `davivienda`, `bogota`, `cajasocial`, `scotiabank` / `colpatria`, `breb` (Bre-B keys), `cashdeposit` |
+| Multi-market / generic    | `bank`, `bbva`, `zelle` |
+
+Any other string is passed through to Binance as-is (useful for payment
+methods outside this list). Pass `any` to disable the bank filter entirely.
 
 ## Examples
 
@@ -77,6 +82,12 @@ Buy USDT with Zelle at the cheapest rate:
 
 ```bash
 node p2p_rates.mjs --trade BUY --fiat USD --bank zelle --rows 10
+```
+
+Compare top Colombian banks (Bancolombia, Nequi, Daviplata) for selling USDT:
+
+```bash
+node p2p_rates.mjs --fiat COP --banks bancolombia,nequi,daviplata --rows 3
 ```
 
 Machine-readable output for downstream automations (includes `by_bank` when
