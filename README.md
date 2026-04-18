@@ -21,18 +21,22 @@ node p2p_rates.mjs [options]
 
 ### Options
 
-| Flag              | Type    | Default      | Description                                                                 |
-| ----------------- | ------- | ------------ | --------------------------------------------------------------------------- |
-| `--amount N`      | number  | —            | Only include ads that accept this fiat amount (Binance `transAmount`).      |
-| `--target-ves N`  | number  | —            | Shortcut: sets `--amount` and reports the USDT equivalent at best/avg rate. |
-| `--fiat CODE`     | string  | `VES`        | Fiat currency code (`VES`, `USD`, `COP`, `ARS`, etc.).                      |
-| `--trade SIDE`    | enum    | `SELL`       | `SELL` = you sell USDT. `BUY` = you buy USDT.                               |
-| `--bank NAME`     | string  | `provincial` | Payment method alias (see below), or `any` / `none` to disable the filter. |
-| `--rows N`        | number  | `5`          | Number of merchants to return (1–20).                                       |
-| `--min-orders N`  | number  | `0`          | Exclude merchants with fewer monthly orders than N.                         |
-| `--json`          | flag    | off          | Print the raw Binance response as JSON.                                     |
-| `--summary-json`  | flag    | off          | Print a compact structured summary (best/avg/worst + merchants).            |
-| `-h`, `--help`    | flag    | —            | Show help and exit.                                                         |
+| Flag               | Type    | Default      | Description                                                                 |
+| ------------------ | ------- | ------------ | --------------------------------------------------------------------------- |
+| `--amount N`       | number  | —            | Only include ads that accept this fiat amount (Binance `transAmount`).      |
+| `--target-ves N`   | number  | —            | Shortcut: sets `--amount` and reports the USDT equivalent at best/avg rate. |
+| `--fiat CODE`      | string  | `VES`        | Fiat currency code (`VES`, `USD`, `COP`, `ARS`, etc.).                      |
+| `--trade SIDE`     | enum    | `SELL`       | `SELL` = you sell USDT. `BUY` = you buy USDT.                               |
+| `--bank NAME`      | string  | `provincial` | Single payment method alias (see below), or `any`/`none` to disable.       |
+| `--banks a,b,c`    | list    | —            | Compare multiple banks in one run. Overrides `--bank`; adds a `by_bank` block to the summary and picks the global best across all banks. |
+| `--rows N`         | number  | `5`          | Merchants per bank (1–20).                                                  |
+| `--min-orders N`   | number  | `0`          | Exclude merchants with fewer monthly orders than N.                         |
+| `--min-finish-rate N` | number | `0`         | Minimum 30-day completion rate. Accepts `0.98` or `98` — both mean 98%.    |
+| `--tradable-only`  | flag    | off          | Keep only ads with `isTradable=true` (skip out-of-stock/paused).            |
+| `--verified-only`  | flag    | off          | Restrict to verified merchants (sends `publisherType=merchant` to Binance). |
+| `--json`           | flag    | off          | Print the raw per-bank responses as JSON.                                   |
+| `--summary-json`   | flag    | off          | Print a compact structured summary (best/avg/worst + merchants + by_bank). |
+| `-h`, `--help`     | flag    | —            | Show help and exit.                                                         |
 
 ### Supported bank aliases
 
