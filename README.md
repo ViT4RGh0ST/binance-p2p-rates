@@ -59,16 +59,31 @@ to sell, filtering out low-activity merchants:
 node p2p_rates.mjs --target-ves 20000 --bank provincial --min-orders 100
 ```
 
+**Compare multiple banks in one shot** (the tool fetches each in parallel
+and picks the global best, plus a per-bank breakdown):
+
+```bash
+node p2p_rates.mjs --banks provincial,banesco,mercantil --rows 3
+```
+
+Only trade with verified merchants that have a ≥98% completion rate and
+active tradable ads:
+
+```bash
+node p2p_rates.mjs --banks provincial,banesco --verified-only --tradable-only --min-finish-rate 0.98
+```
+
 Buy USDT with Zelle at the cheapest rate:
 
 ```bash
 node p2p_rates.mjs --trade BUY --fiat USD --bank zelle --rows 10
 ```
 
-Machine-readable output for downstream automations:
+Machine-readable output for downstream automations (includes `by_bank` when
+multiple banks are queried):
 
 ```bash
-node p2p_rates.mjs --target-ves 50000 --bank provincial --summary-json
+node p2p_rates.mjs --target-ves 50000 --banks provincial,banesco --summary-json
 ```
 
 ## Summary JSON shape
@@ -76,28 +91,48 @@ node p2p_rates.mjs --target-ves 50000 --bank provincial --summary-json
 ```jsonc
 {
   "timestamp": "2026-04-17T20:16:13.411Z",
-  "query": { "trade": "SELL", "fiat": "VES", "bank": "provincial", "amount": 50000, "min_orders": 100 },
-  "n_merchants": 5,
-  "best": {
-    "rate": 617.60,
-    "merchant": "ElGocho54",
-    "orders": 514,
-    "min": 20000,
-    "max": 37111,
-    "methods": ["Provincial"]
+  "query": {
+    "trade": "SELL",
+    "fiat": "VES",
+    "banks": ["provincial", "banesco"],
+    "amount": 50000,
+    "min_orders": 100,
+    "min_finish_rate": 0.98,
+    "tradable_only": true,
+    "verified_only": true
   },
-  "avg_rate": 617.06,
-  "worst_rate": 616.80,
-  "merchants": [ /* full list with per-merchant details */ ],
+  "n_merchants": 6,
+  "best": {
+    "rate": 620.60,
+    "merchant": "Blank_Mind",
+    "bank": "banesco",
+    "orders": 5793,
+    "min": 2000000,
+    "max": 14000000,
+    "methods": ["Banesco"],
+    "verified": true
+  },
+  "avg_rate": 619.01,
+  "worst_rate": 617.56,
+  "merchants": [
+    /* sorted globally by best rate; each item includes bank, verified,
+       pro_merchant, tradable, finish_rate, orders, min, max, methods */
+  ],
+  "by_bank": {
+    "provincial": { "best_rate": 617.61, "best_merchant": "TuCambioYa_", "avg_rate": 617.59, "n_merchants": 3 },
+    "banesco":    { "best_rate": 620.60, "best_merchant": "Blank_Mind",  "avg_rate": 620.44, "n_merchants": 3 }
+  },
   "target": {
     "target_ves": 50000,
-    "usdt_at_best_rate": 80.96,
-    "usdt_at_avg_rate": 80.99
+    "usdt_at_best_rate": 80.57,
+    "usdt_at_avg_rate": 80.77
   }
 }
 ```
 
-`target` is only present when `--target-ves` is passed.
+- `by_bank` appears only when more than one bank is queried.
+- `target` appears only when `--target-ves` is passed.
+- If a specific bank fails (network, rate limit), its entry in `by_bank` carries an `error` field and its merchants are excluded from the merged list.
 
 ## Notes
 
